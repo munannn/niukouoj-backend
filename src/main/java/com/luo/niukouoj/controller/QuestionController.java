@@ -10,10 +10,7 @@ import com.luo.niukouoj.common.ResultUtils;
 import com.luo.niukouoj.constant.UserConstant;
 import com.luo.niukouoj.exception.BusinessException;
 import com.luo.niukouoj.exception.ThrowUtils;
-import com.luo.niukouoj.model.dto.question.QuestionAddRequest;
-import com.luo.niukouoj.model.dto.question.QuestionEditRequest;
-import com.luo.niukouoj.model.dto.question.QuestionQueryRequest;
-import com.luo.niukouoj.model.dto.question.QuestionUpdateRequest;
+import com.luo.niukouoj.model.dto.question.*;
 import com.luo.niukouoj.model.entity.Question;
 import com.luo.niukouoj.model.entity.User;
 import com.luo.niukouoj.model.vo.QuestionVO;
@@ -58,9 +55,20 @@ public class QuestionController {
         }
         Question question = new Question();
         BeanUtils.copyProperties(questionAddRequest, question);
+        // 将题目的标签、判题用例、判题配置转换为Json字符串并设置给题目对象
         List<String> tags = questionAddRequest.getTags();
         if (tags != null) {
             question.setTags(JSONUtil.toJsonStr(tags));
+        }
+        List<JudgeCase> judgeCase = questionAddRequest.getJudgeCase();
+        if (judgeCase != null) {
+            String judgeCaseStr = JSONUtil.toJsonStr(judgeCase);
+            judgeCaseStr = judgeCaseStr.replace("[", "").replace("]", "");
+            question.setJudgeCase(judgeCaseStr);
+        }
+        JudgeConfig judgeConfig = questionAddRequest.getJudgeConfig();
+        if (judgeConfig != null) {
+            question.setJudgeConfig(JSONUtil.toJsonStr(judgeConfig));
         }
         questionService.validQuestion(question, true);
         User loginUser = userService.getLoginUser(request);
@@ -128,6 +136,25 @@ public class QuestionController {
 
     /**
      * 根据 id 获取
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/get")
+    public BaseResponse<Question> getQuestionById(long id, HttpServletRequest request) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Question question = questionService.getById(id);
+        if (question == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        return ResultUtils.success(questionService.getQuestion(question, loginUser));
+    }
+
+    /**
+     * 根据 id 获取 QuestionVO
      *
      * @param id
      * @return

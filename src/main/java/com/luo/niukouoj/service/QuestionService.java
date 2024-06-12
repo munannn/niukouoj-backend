@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.luo.niukouoj.model.dto.question.QuestionQueryRequest;
 import com.luo.niukouoj.model.entity.Question;
+import com.luo.niukouoj.model.entity.User;
 import com.luo.niukouoj.model.vo.QuestionVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,14 @@ public interface QuestionService extends IService<Question> {
      */
     QueryWrapper<Question> getQueryWrapper(QuestionQueryRequest questionQueryRequest);
 
+    /**
+     * 获取题目对象返回给前端
+     *
+     * @param question
+     * @param loginUser
+     * @return
+     */
+    Question getQuestion(Question question, User loginUser);
 
     /**
      * 获取题目封装对象返回给前端
@@ -48,4 +57,6 @@ public interface QuestionService extends IService<Question> {
      * @return
      */
     Page<QuestionVO> getQuestionVOPage(Page<Question> questionPage, HttpServletRequest request);
+
+
 }

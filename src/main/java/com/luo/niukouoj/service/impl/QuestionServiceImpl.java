@@ -16,6 +16,7 @@ import com.luo.niukouoj.model.dto.question.QuestionEditRequest;
 import com.luo.niukouoj.model.dto.question.QuestionQueryRequest;
 import com.luo.niukouoj.model.entity.*;
 import com.luo.niukouoj.mapper.QuestionMapper;
+import com.luo.niukouoj.model.enums.UserRoleEnum;
 import com.luo.niukouoj.model.vo.QuestionVO;
 import com.luo.niukouoj.model.vo.UserVO;
 import com.luo.niukouoj.service.QuestionService;
@@ -110,6 +111,17 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
                 sortField);
         return queryWrapper;
+    }
+
+    @Override
+    public Question getQuestion(Question question, User loginUser) {
+        // 若不是本人或管理员，则不允许返回所有数据
+        Long userId = question.getUserId();
+        Long loginUserId = loginUser.getId();
+        if (!userId.equals(loginUserId) && !userService.isAdmin(loginUser)) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        return question;
     }
 
     @Override

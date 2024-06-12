@@ -7,22 +7,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 题目提交语言枚举
+ * 代码沙箱枚举
  *
  * @author luo
  */
-public enum QuestionSubmitLanguageEnum {
+public enum CodeSandBoxEnum {
 
+    /**
+     * 示例代码沙箱
+     */
+    EXAMPLE("示例", "example"),
+    /**
+     * 远程代码沙箱
+     */
+    REMOTE("远程", "remote"),
 
-    JAVA("Java", "Java"),
-    PYTHON("Python", "Python"),
-    GOLANG("Golang", "Go");
+    /**
+     * 第三方代码沙箱
+     */
+    THIRD_PART("第三方", "third_part");
 
     private final String text;
 
     private final String value;
 
-    QuestionSubmitLanguageEnum(String text, String value) {
+    CodeSandBoxEnum(String text, String value) {
         this.text = text;
         this.value = value;
     }
@@ -42,11 +51,11 @@ public enum QuestionSubmitLanguageEnum {
      * @param value
      * @return
      */
-    public static QuestionSubmitLanguageEnum getEnumByValue(String value) {
+    public static CodeSandBoxEnum getEnumByValue(String value) {
         if (ObjectUtils.isEmpty(value)) {
             return null;
         }
-        for (QuestionSubmitLanguageEnum anEnum : QuestionSubmitLanguageEnum.values()) {
+        for (CodeSandBoxEnum anEnum : CodeSandBoxEnum.values()) {
             if (anEnum.value.equals(value)) {
                 return anEnum;
             }
@@ -61,5 +70,4 @@ public enum QuestionSubmitLanguageEnum {
     public String getText() {
         return text;
     }
-
 }

@@ -96,3 +96,6 @@ knife4j:
         api-rule: package
         api-rule-resources:
           - com.luo.niukouoj.controller
+
+codesandbox:
+  type: example

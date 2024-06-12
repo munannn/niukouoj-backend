@@ -1,6 +1,7 @@
 package com.luo.niukouoj.model.vo;
 
 import cn.hutool.json.JSONUtil;
+import com.luo.niukouoj.model.dto.question.JudgeCase;
 import com.luo.niukouoj.model.dto.question.JudgeConfig;
 import com.luo.niukouoj.model.entity.Question;
 import lombok.Data;
@@ -54,6 +55,11 @@ public class QuestionVO implements Serializable {
     private JudgeConfig judgeConfig;
 
     /**
+     * 判题用例 (json 对象)
+     */
+    private JudgeCase judgeCase;
+
+    /**
      * 点赞数
      */
     private Integer thumbNum;
@@ -103,6 +109,10 @@ public class QuestionVO implements Serializable {
         if (voJudgeConfig != null) {
             question.setJudgeConfig(JSONUtil.toJsonStr(voJudgeConfig));
         }
+        JudgeCase voJudgeCase = questionVO.getJudgeCase();
+        if (voJudgeCase != null) {
+            question.setJudgeCase(JSONUtil.toJsonStr(voJudgeCase));
+        }
         return question;
     }
 
@@ -122,6 +132,8 @@ public class QuestionVO implements Serializable {
         questionVO.setTags(tagList);
         String judgeConfigStr = question.getJudgeConfig();
         questionVO.setJudgeConfig(JSONUtil.toBean(judgeConfigStr, JudgeConfig.class));
+        String judgeCaseStr = question.getJudgeCase();
+        questionVO.setJudgeCase(JSONUtil.toBean(judgeCaseStr, JudgeCase.class));
         return questionVO;
     }
 
