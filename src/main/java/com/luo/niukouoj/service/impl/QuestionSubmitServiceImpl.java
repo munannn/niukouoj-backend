@@ -7,17 +7,15 @@ import com.luo.niukouoj.common.ErrorCode;
 import com.luo.niukouoj.constant.CommonConstant;
 import com.luo.niukouoj.exception.BusinessException;
 import com.luo.niukouoj.judge.JudgeService;
+import com.luo.niukouoj.mapper.QuestionSubmitMapper;
 import com.luo.niukouoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
 import com.luo.niukouoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
-import com.luo.niukouoj.model.entity.Post;
 import com.luo.niukouoj.model.entity.Question;
 import com.luo.niukouoj.model.entity.QuestionSubmit;
-import com.luo.niukouoj.mapper.QuestionSubmitMapper;
 import com.luo.niukouoj.model.entity.User;
 import com.luo.niukouoj.model.enums.QuestionSubmitLanguageEnum;
 import com.luo.niukouoj.model.enums.QuestionSubmitStatusEnum;
 import com.luo.niukouoj.model.vo.QuestionSubmitVO;
-import com.luo.niukouoj.service.PostThumbService;
 import com.luo.niukouoj.service.QuestionService;
 import com.luo.niukouoj.service.QuestionSubmitService;
 import com.luo.niukouoj.service.UserService;
@@ -25,7 +23,6 @@ import com.luo.niukouoj.utils.SqlUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -84,10 +81,7 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         }
         Long questionSubmitId = questionSubmit.getId();
         //执行判题服务
-        CompletableFuture.runAsync(() -> {
-            judgeService.doJudge(questionSubmitId);
-        });
-
+        CompletableFuture.runAsync(() -> judgeService.doJudge(questionSubmitId));
         return questionSubmit.getId();
     }
 

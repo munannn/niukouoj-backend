@@ -12,11 +12,13 @@ import java.util.stream.Collectors;
  * @author luo
  */
 public enum QuestionSubmitLanguageEnum {
-
-
-    JAVA("Java", "Java"),
-    PYTHON("Python", "Python"),
-    GOLANG("Golang", "Go");
+    /**
+     * 题目选择语言
+     */
+    JAVA("java", "java"),
+    PYTHON("python", "python"),
+    GO("go", "go"),
+    HTML("html", "html");
 
     private final String text;
 

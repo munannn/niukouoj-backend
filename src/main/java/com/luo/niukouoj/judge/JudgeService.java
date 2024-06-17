@@ -1,7 +1,6 @@
 package com.luo.niukouoj.judge;
 
 import com.luo.niukouoj.model.entity.QuestionSubmit;
-import com.luo.niukouoj.model.vo.QuestionSubmitVO;
 
 /**
  * @author 木南

@@ -1,19 +1,16 @@
 package com.luo.niukouoj.judge.codesandbox;
 
-/**
- * @author 木南
- * @version 1.0
- * @Description 代码沙箱工厂
- */
-
 import com.luo.niukouoj.judge.codesandbox.impl.ExampleCodeSandBox;
 import com.luo.niukouoj.judge.codesandbox.impl.RemoteCodeSandBox;
 import com.luo.niukouoj.judge.codesandbox.impl.ThirdPartCodeSandBox;
 import com.luo.niukouoj.model.enums.CodeSandBoxEnum;
 
 /**
- * 使用单例模式 + 工厂模式 ，确保只有一个工厂实例，工厂通过传入的字符串参数创建对应的代码沙箱
+ * @author 木南
+ * @version 1.0
+ * @Description 代码沙箱工厂 使用单例模式 + 工厂模式 ，确保只有一个工厂实例，工厂通过传入的字符串参数创建对应的代码沙箱
  */
+
 public class CodeSandBoxFactory {
 
     private static CodeSandBoxFactory instance;
@@ -40,7 +37,7 @@ public class CodeSandBoxFactory {
         }
         return instance;
     }
-    
+
     public CodeSandBox newInstance(String type) {
         CodeSandBoxEnum enumByValue = CodeSandBoxEnum.getEnumByValue(type);
         if (enumByValue == null) {

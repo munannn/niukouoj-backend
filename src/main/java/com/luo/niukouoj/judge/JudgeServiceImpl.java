@@ -75,7 +75,7 @@ public class JudgeServiceImpl implements JudgeService {
         codeSandBox = new CodeSandBoxProxy(codeSandBox);
         String language = questionSubmit.getLanguage();
         String code = questionSubmit.getCode();
-        // 获取输入用例
+        // 获取题目输入用例
         String judgeCaseStr = question.getJudgeCase();
         List<JudgeCase> judgeCaseList = JSONUtil.toList(judgeCaseStr, JudgeCase.class);
         List<String> inputCaseList = judgeCaseList.stream().map(JudgeCase::getInput).collect(Collectors.toList());
