@@ -9,6 +9,7 @@ import com.luo.niukouoj.model.entity.User;
 import com.luo.niukouoj.model.vo.QuestionVO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author 木南
@@ -48,6 +49,22 @@ public interface QuestionService extends IService<Question> {
      * @return
      */
     QuestionVO getQuestionVO(Question question, HttpServletRequest request);
+
+    /**
+     * 获取脱敏的题目信息
+     *
+     * @param question
+     * @return
+     */
+    QuestionVO getQuestionVO(Question question);
+
+    /**
+     * 获取脱敏的题目信息
+     *
+     * @param questionList
+     * @return
+     */
+    List<QuestionVO> getQuestionVO(List<Question> questionList);
 
     /**
      * 分页获取帖子封装

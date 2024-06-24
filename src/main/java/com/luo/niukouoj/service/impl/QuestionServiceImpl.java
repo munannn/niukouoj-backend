@@ -4,6 +4,7 @@ import java.util.List;
 
 import java.util.Date;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -29,6 +30,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
@@ -136,6 +138,24 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question>
         UserVO userVO = userService.getUserVO(user);
         questionVO.setUserVO(userVO);
         return questionVO;
+    }
+
+    @Override
+    public QuestionVO getQuestionVO(Question question) {
+        if (question == null) {
+            return null;
+        }
+        QuestionVO questionVO = new QuestionVO();
+        BeanUtils.copyProperties(question,questionVO);
+        return questionVO;
+    }
+
+    @Override
+    public List<QuestionVO> getQuestionVO(List<Question> questionList) {
+        if (CollUtil.isEmpty(questionList)) {
+            return new ArrayList<>();
+        }
+        return questionList.stream().map(this::getQuestionVO).collect(Collectors.toList());
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.luo.niukouoj.judge.strategy.JavaLanguageJudgeStrategy;
 import com.luo.niukouoj.judge.strategy.JudgeContext;
 import com.luo.niukouoj.judge.strategy.JudgeStrategy;
 import com.luo.niukouoj.model.entity.QuestionSubmit;
+import com.luo.niukouoj.model.enums.QuestionSubmitLanguageEnum;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,7 +27,7 @@ public class JudgeManager {
         QuestionSubmit questionSubmit = judgeContext.getQuestionSubmit();
         String language = questionSubmit.getLanguage();
         JudgeStrategy judgeStrategy = new DefaultJudgeStrategy();
-        if ("java".equals(language)) {
+        if (QuestionSubmitLanguageEnum.JAVA.getValue().equals(language)) {
             judgeStrategy = new JavaLanguageJudgeStrategy();
         }
         return judgeStrategy.doJudge(judgeContext);

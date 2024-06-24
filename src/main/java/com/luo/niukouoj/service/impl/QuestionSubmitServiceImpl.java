@@ -16,6 +16,8 @@ import com.luo.niukouoj.model.entity.User;
 import com.luo.niukouoj.model.enums.QuestionSubmitLanguageEnum;
 import com.luo.niukouoj.model.enums.QuestionSubmitStatusEnum;
 import com.luo.niukouoj.model.vo.QuestionSubmitVO;
+import com.luo.niukouoj.model.vo.QuestionVO;
+import com.luo.niukouoj.model.vo.UserVO;
 import com.luo.niukouoj.service.QuestionService;
 import com.luo.niukouoj.service.QuestionSubmitService;
 import com.luo.niukouoj.service.UserService;
@@ -27,7 +29,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -82,7 +86,7 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         Long questionSubmitId = questionSubmit.getId();
         //执行判题服务
         CompletableFuture.runAsync(() -> judgeService.doJudge(questionSubmitId));
-        return questionSubmit.getId();
+        return questionSubmitId;
     }
 
     @Override
@@ -131,9 +135,32 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         List<QuestionSubmitVO> questionSubmitVOList = questionSubmitList.stream()
                 .map(questionSubmit -> getQuestionSubmitVO(questionSubmit, loginUser))
                 .collect(Collectors.toList());
+        // 获取List<UserVO>并将其放入Map<userId, UserVO>
+        Map<Long, UserVO> userVOMap = questionSubmitList.stream()
+                .map(questionSubmit -> userService.getById(questionSubmit.getUserId()))
+                .distinct()
+                .map(user -> userService.getUserVO(Collections.singletonList(user)).get(0))
+                .collect(Collectors.toMap(UserVO::getId, userVO -> userVO));
+        // 对每个 QuestionSubmitVO 设置 UserVO
+        questionSubmitVOList.forEach(questionSubmitVO -> {
+            Long userId = questionSubmitVO.getUserId();
+            UserVO userVO = userVOMap.get(userId);
+            questionSubmitVO.setUserVO(userVO);
+        });
+        // 获取List<QuestionVO>并将其放入Map<questionId, QuestionVO>
+        Map<Long, QuestionVO> questionVOMap = questionSubmitVOList.stream()
+                .map(questionSubmitVO -> questionService.getById(questionSubmitVO.getQuestionId()))
+                .distinct()
+                .map(question -> questionService.getQuestionVO(Collections.singletonList(question)).get(0))
+                .collect(Collectors.toMap(QuestionVO::getId, questionVO -> questionVO));
+        // 对每个 QuestionSubmitVO 设置 QuestionVO
+        questionSubmitVOList.forEach(questionSubmitVO -> {
+            Long questionId = questionSubmitVO.getQuestionId();
+            QuestionVO questionVO = questionVOMap.get(questionId);
+            questionSubmitVO.setQuestionVO(questionVO);
+        });
         questionSubmitVOPage.setRecords(questionSubmitVOList);
         return questionSubmitVOPage;
-
     }
 }
 

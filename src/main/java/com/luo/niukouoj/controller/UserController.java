@@ -8,7 +8,6 @@ import com.luo.niukouoj.common.BaseResponse;
 import com.luo.niukouoj.common.DeleteRequest;
 import com.luo.niukouoj.common.ErrorCode;
 import com.luo.niukouoj.common.ResultUtils;
-import com.luo.niukouoj.config.WxOpenConfig;
 import com.luo.niukouoj.constant.UserConstant;
 import com.luo.niukouoj.exception.BusinessException;
 import com.luo.niukouoj.exception.ThrowUtils;

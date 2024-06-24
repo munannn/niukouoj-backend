@@ -1,29 +1,26 @@
 package com.luo.niukouoj.judge;
 
-import com.luo.niukouoj.judge.codesandbox.model.JudgeInfo;
-
 import cn.hutool.json.JSONUtil;
 import com.luo.niukouoj.common.ErrorCode;
 import com.luo.niukouoj.exception.BusinessException;
-import com.luo.niukouoj.judge.JudgeService;
 import com.luo.niukouoj.judge.codesandbox.CodeSandBox;
 import com.luo.niukouoj.judge.codesandbox.CodeSandBoxFactory;
 import com.luo.niukouoj.judge.codesandbox.CodeSandBoxProxy;
 import com.luo.niukouoj.judge.codesandbox.model.ExecuteCodeRequest;
 import com.luo.niukouoj.judge.codesandbox.model.ExecuteCodeResponse;
+import com.luo.niukouoj.judge.codesandbox.model.JudgeInfo;
 import com.luo.niukouoj.judge.strategy.JudgeContext;
 import com.luo.niukouoj.model.dto.question.JudgeCase;
-import com.luo.niukouoj.model.dto.question.JudgeConfig;
 import com.luo.niukouoj.model.entity.Question;
 import com.luo.niukouoj.model.entity.QuestionSubmit;
-import com.luo.niukouoj.model.enums.JudgeInfoMessageEnum;
 import com.luo.niukouoj.model.enums.QuestionSubmitStatusEnum;
-import com.luo.niukouoj.model.vo.QuestionSubmitVO;
 import com.luo.niukouoj.service.QuestionService;
 import com.luo.niukouoj.service.QuestionSubmitService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,6 +28,7 @@ import java.util.stream.Collectors;
  * @author 木南
  * @version 1.0
  */
+@Service
 public class JudgeServiceImpl implements JudgeService {
 
     @Resource
@@ -42,8 +40,8 @@ public class JudgeServiceImpl implements JudgeService {
     @Resource
     private JudgeManager judgeManager;
 
-    @Value("${codesandbox.type}")
-    String type;
+    @Value("${codesandbox.type:remote}")
+    private String type;
 
     @Override
     public QuestionSubmit doJudge(long questionSubmitId) {
@@ -77,15 +75,20 @@ public class JudgeServiceImpl implements JudgeService {
         String code = questionSubmit.getCode();
         // 获取题目输入用例
         String judgeCaseStr = question.getJudgeCase();
-        List<JudgeCase> judgeCaseList = JSONUtil.toList(judgeCaseStr, JudgeCase.class);
+        System.out.println(judgeCaseStr);
+        JudgeCase judgeCase = JSONUtil.toBean(judgeCaseStr, JudgeCase.class);
+        List<JudgeCase> judgeCaseList = new ArrayList<>();
+        judgeCaseList.add(judgeCase);
         List<String> inputCaseList = judgeCaseList.stream().map(JudgeCase::getInput).collect(Collectors.toList());
         ExecuteCodeRequest executeCodeRequest =
                 ExecuteCodeRequest.builder()
                         .language(language)
                         .code(code)
                         .inputCaseList(inputCaseList).build();
+        // 调用代码沙箱，执行代码并获取执行结果
         ExecuteCodeResponse executeCodeResponse = codeSandBox.executeCode(executeCodeRequest);
         List<String> outputCaseList = executeCodeResponse.getOutputCaseList();
+        // 根据代码沙箱的执行结果，设置题目的判题状态和信息
         JudgeContext judgeContext = new JudgeContext();
         judgeContext.setJudgeInfo(executeCodeResponse.getJudgeInfo());
         judgeContext.setInputCaseList(inputCaseList);
